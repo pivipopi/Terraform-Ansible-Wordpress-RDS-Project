@@ -1,9 +1,9 @@
 db:
   socket: "/var/run/mysqld/mysqld.sock"
-  name: "wpdb"
-  user: "wpadm"
-  passwd: "P@ssw0rd"
-  host: "{{ private_ip }}"
+  name: "{{ db_name }}"
+  user: "{{ db_user }}"
+  passwd: "{{ db_passwd }}"
+  host: "{{ db_host }}"
 
 wp_ver: "5.8"
 wp:

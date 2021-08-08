@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "ami_image" {
   description = "ubuntu 20.04"
   type        = string
-  default = "ami-0f49ee52a88cc2435"
+  default     = "ami-0f49ee52a88cc2435"
 }
 
 variable "instance_type" {

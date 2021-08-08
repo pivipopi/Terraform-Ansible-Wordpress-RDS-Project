@@ -1,6 +1,12 @@
 private_ip: 15.165.50.22
 service_port: 8080
-private_ip: 15.165.37.165
+db_name: wpdb
+db_user: wpadm
+db_passwd: qwer1234
+db_host: terraform-20210808202353195600000001.ci5egaijusgz.ap-northeast-2.rds.amazonaws.com:3306 
+private_ip: 3.36.101.151
 service_port: 8080
-private_ip: 3.35.177.250
-service_port: 8080
+db_passwd: qwer1234
+db_name: mydb
+db_host: terraform-20210808202353195600000001.ci5egaijusgz.ap-northeast-2.rds.amazonaws.com:3306
+db_user: wpadm
