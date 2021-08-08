@@ -1,0 +1,39 @@
+- name: Install and Starting MySQL
+  block:
+    - name: Install MySQL Package
+      apt:
+        update_cache: true
+        name: mysql-server, python3-pymysql
+        state: present
+
+    - name: Starting Mysql Service
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+- name: Setting MySQL
+  block:
+    - name: Create Wordpress Database
+      mysql_db:
+        check_implicit_admin: yes
+        login_unix_socket: "{{ db['socket'] }}"
+        name: "{{ db['name'] }}"
+        state: present
+
+    - name: Create Wordpress User
+      mysql_user:
+        check_implicit_admin: yes
+        login_unix_socket: "{{ db['socket'] }}"
+        name: "{{ db['user'] }}"
+        password: "{{ db['passwd'] }}"
+        host: "{{ private_ip }}"
+        priv: "{{ db['name'] }}.*:ALL,GRANT"
+        state: present
+
+    - name: External Connection Setting
+      lineinfile:
+        path: /etc/mysql/mysql.conf.d/mysqld.cnf
+        regexp: bind-address
+        line: bind-address=0.0.0.0
+      notify: MySQL Service Restart For Debian

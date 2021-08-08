@@ -1,0 +1,9 @@
+- name: Apache2 Service Restart For Debian
+  service:
+    name: apache2
+    state: restarted
+
+- name: Hpptd Service Restart For RedHat
+  service:
+    name: hpptd
+    state: restarted

@@ -1,0 +1,31 @@
+- name: Stop Apache2 Service
+  service:
+    name: apache2
+    state: stopped
+  ignore_errors: true
+
+- name: Remove Apache2 Package
+  apt:
+    name: apache2, php, php-mysql, php-gd, php-mbstring
+    state: absent
+    purge: yes
+
+- name: Remove Dep-Apache2 Package
+  apt:
+    autoremove: yes
+    purge: yes
+
+- name: Remove Apache Configuration
+  file:
+    path: /etc/apache2
+    state: absent
+
+- name: Remove Wordpress Archive Files
+  file:
+    path: /tmp/wordpress-5.8.tar.gz
+    state: absent
+
+- name: Delete Wordpress App
+  file:
+    path: /var/www/html
+    state: absent

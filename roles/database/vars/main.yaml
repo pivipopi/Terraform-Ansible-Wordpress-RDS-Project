@@ -1,0 +1,6 @@
+db:
+  socket: "/var/run/mysqld/mysqld.sock"
+  name: "wpdb"
+  user: "wpadm"
+  passwd: "P@ssw0rd"
+  host: "{{ groups['webserver'] }}/32"

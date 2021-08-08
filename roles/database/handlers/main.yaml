@@ -1,0 +1,9 @@
+- name: MySQL Service Restart For Debian
+  service:
+    name: mysql
+    state: restarted
+
+- name: Maria Service Restart For RedHat
+  service:
+    name: mysqld
+    state: restarted

@@ -1,0 +1,26 @@
+- name: Stop MySQL Service
+  service:
+    name: mysql
+    state: stopped
+  ignore_errors: true
+
+- name: Remove MySQL Package
+  apt:
+    name: mysql-server, python3-pymysql, mysql-common, mysql-client
+    state: absent
+    purge: yes
+
+- name: Remove MySQL Configuration
+  file:
+    path: /etc/mysql
+    state: absent
+
+- name: Remove Dep-MySQL Package
+  apt:
+    autoremove: yes
+    purge: yes
+
+- name: Cleanup Databases
+  file:
+    path: /var/lib/mysql
+    state: absent

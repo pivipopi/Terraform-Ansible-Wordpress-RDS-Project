@@ -1,0 +1,34 @@
+- name: Install and Starting Maria
+  block:
+    - name: Install Maria Package
+      yum:
+        update_cache: yes
+        name: mariadb-server, python3-pymysql
+        state: present
+
+    - name: Starting Maria Service
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+
+
+- name: Setting Maria
+  block:
+    - name: Create Wordpress User
+      mysql_user:
+        check_implicit_admin: yes
+        login_unix_socket: "{{ db['socket'] }}"
+        name: "{{ db['user'] }}"
+        password: "{{ db['passwd'] }}"
+        host: "{{ private_ip }}"
+        priv: "{{ db['name'] }}.*:ALL,GRANT"
+        state: present
+
+    - name: Create Wordpress Database
+      mysql_db:
+        login_unix_socket: "{{ db['socket'] }}"
+        name: "{{ db['name'] }}"
+        state: present
+      notify:
+        - Maria Service Restart For RedHat

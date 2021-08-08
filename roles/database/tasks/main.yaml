@@ -1,0 +1,7 @@
+- name: Istall DB For Debian
+  import_tasks: debian.yaml
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Istall DB For RedHat
+  import_tasks: redhat.yaml
+  when: ansible_facts['os_family'] == "RedHat"

@@ -1,0 +1,15 @@
+- name: Configure DB
+  hosts: "{{ groups['ungrouped'][0] }}"
+  roles:
+    - database
+
+- name: Configure Wordpress
+  hosts: "{{ groups['ungrouped'][0] }}"
+  roles:
+    - wordpress
+  post_tasks:
+    - name: Check Web Status Using Uri
+      uri:
+        url: "http://{{ groups[ungrouped'][0] }}:{{ service_port }}/wordpress"
+        status_code: 200
+        return_content: yes

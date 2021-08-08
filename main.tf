@@ -1,37 +1,47 @@
-module "my_vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "3.2.0"
-
-  name = var.vpc_name
-  cidr = var.vpc_cidr
-
-  azs             = var.vpc_azs
-  private_subnets = var.vpc_private_subnets
-  public_subnets  = var.vpc_public_subnets
-
-  enable_nat_gateway = var.vpc_enable_nat_gateway
-
-  tags = local.common_tags
-}
-
 resource "aws_instance" "my_instance" {
-  count                  = var.instances_per_subnet * length(module.my_vpc.public_subnets)
-  ami                    = data.aws_ami.amazon_linux.id
+  ami                    = var.ami_image
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.my_sg_web.id]
   key_name               = aws_key_pair.my_sshkey.key_name
-  subnet_id              = module.my_vpc.public_subnets[count.index % length(module.my_vpc.public_subnets)]
 
-  tags = local.common_tags
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file("./my_sshkey")
+    host        = self.public_ip
+  }
+
+  provisioner "file" {
+    source      = "site.yaml"
+    destination = "/home/ubuntu/site.yaml"
+  }
+
+  provisioner "file" {
+    source      = "roles"
+    destination = "/home/ubuntu/"
+  }
+
+  provisioner "file" {
+    source      = "group_vars"
+    destination = "/home/ubuntu/"
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOF
+      ssh-keyscan -t ssh-rsa ${self.public_ip} >> .ssh/known_hosts
+      echo "${self.public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=./my_sshkey" > inventory.ini
+      echo "private_ip: ${self.public_ip}" >> group_vars/common.yaml
+      echo "service_port: ${var.wp_port}" >> group_vars/common.yaml
+      sudo apt-get update
+      EOF
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -i inventory.ini site.yaml -b"
+  }
 }
 
 resource "aws_key_pair" "my_sshkey" {
   key_name   = "my_sshkey"
   public_key = file("./my_sshkey.pub")
-}
-
-resource "aws_eip" "my_eip" {
-  count    = var.instances_per_subnet * length(module.my_vpc.public_subnets)
-  vpc      = true
-  instance = aws_instance.my_instance[count.index].id
 }
