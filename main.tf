@@ -28,14 +28,14 @@ resource "aws_instance" "my_instance" {
 
   provisioner "local-exec" {
     command = <<-EOF
-      ssh-keyscan -t ssh-rsa ${self.public_ip} >> .ssh/known_hosts
+      ssh-keyscan -t ssh-rsa ${self.public_ip} >> ~/.ssh/known_hosts
       echo "${self.public_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=./my_sshkey" > inventory.ini
-      echo "private_ip: ${self.public_ip}" >> group_vars/common.yaml
-      echo "service_port: ${var.wp_port}" >> group_vars/common.yaml
-      echo "db_passwd: ${aws_db_instance.rds_instance.password}" >> group_vars/common.yaml
-      echo "db_name: ${aws_db_instance.rds_instance.name}" >> group_vars/common.yaml
-      echo "db_host: ${aws_db_instance.rds_instance.endpoint}" >> group_vars/common.yaml
-      echo "db_user: ${aws_db_instance.rds_instance.username}" >> group_vars/common.yaml
+      echo "private_ip: ${self.public_ip}" >> group_vars/all.yaml
+      echo "service_port: ${var.wp_port}" >> group_vars/all.yaml
+      echo "db_passwd: ${aws_db_instance.rds_instance.password}" >> group_vars/all.yaml
+      echo "db_name: ${aws_db_instance.rds_instance.name}" >> group_vars/all.yaml
+      echo "db_host: ${aws_db_instance.rds_instance.endpoint}" >> group_vars/all.yaml
+      echo "db_user: ${aws_db_instance.rds_instance.username}" >> group_vars/all.yaml
       sudo apt-get update
       EOF
   }
