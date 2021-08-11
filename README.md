@@ -20,6 +20,7 @@ sudo apt-get update && sudo apt install terraform
 # 사용 방법
 ```
 git clone https://github.com/pivipopi/Ansible.git     # 깃 허브에 저장되어 있는 wordpress를 클론으로 불러온다.
+ssh-keygen -f my_sshkey -N ''                         # ssh 접속을 위해 인증키가 있어야 한다.
 terraform init                                        # 해당 프로젝트 안에서 init를 한다.
 terraform terraform validate                          # 유효성 검증
 terraform apply -auto-approve                         # 실행
